@@ -924,11 +924,11 @@
         }, {
             period: "Jun 08 - Jul 17",
             tasks: [
-                { name: "Customers", percent: 35, color: "#2563EB", description: "Handle customer inquiries, order placement, product questions, inventory checks, backorder status, and payment tracking via phone and email." },
-                { name: "Delivery Scheduling", percent: 30, color: "#F59E0B", description: "Coordinate delivery appointments, route planning, confirm time windows, and communicate with customers and drivers." },
-                { name: "Invoices Organization", percent: 12, color: "#8B5CF6", description: "Organize paper invoices up to 22270 into ordered file with intervals of 50. Use signed invoices for open balance collection and questions regarding payment." },
-                { name: "Projects", percent: 8, color: "#8B5CF6", description: "Continuously improve and add new modules to the SOP documentation. Help develop Google Sheets template for CIT application. Participate in July inventory check project. Start work on September open house with order placing and invitation making." },
-                { name: "RMA & Parts", percent: 7, color: "#EF4444", description: "Process Return Merchandise Authorizations and damaged/missing parts. Receive requests from customers, evaluate the problems with office manager and manage returns, exchanges, credit memos, parts orders, and reverse logistics coordination." },
+                { name: "Customers", percent: 35, color: "#2563EB", description: "Handle customer inquiries, order placement, product questions, inventory checks, backorder status, and payment tracking via phone and email. Answer any questions and resolve questions customers have." },
+                { name: "Delivery Scheduling", percent: 30, color: "#F59E0B", description: "Work with Lucy for delivery trucks. Confirm delivery items and orders, calculate CBF, fulfill delivery truck goals, collect payments for past deliveries and answer customer questions regarding ETA and routes." },
+                { name: "Invoices Organization", percent: 12, color: "#8B5CF6", description: "Organize paper invoices up to date (23300) into ordered file with intervals of 50. Use signed invoices for open balance collection, credits/rma and questions regarding payment." },
+                { name: "Projects", percent: 8, color: "#8B5CF6", description: "Continuously improve and add new modules to the SOP documentation. Help develop Google Sheets template for CIT application. Participate in July inventory check project with google sheets/excel documents. Start work on September open house with order placing and invitation card making." },
+                { name: "RMA & Parts", percent: 7, color: "#EF4444", description: "Process Return Merchandise Authorizations and damaged/missing parts. Receive requests from customers, evaluate the problems with Antonio and manage returns, exchanges, credit memos, parts orders, and reverse logistics coordination." },
                 { name: "Window Pickup Orders", percent: 5, color: "#10B981", description: "Prepare pickup paperwork, coordinate order window scheduling, verify orders, provide gate directions, collect payment, and record pickup details." }
             ]
         }];
@@ -954,22 +954,18 @@
             ]
         }, {
             plans: [
-                "Complete digital invoice filing system rollout",
-                "Achieve 85%+ pickup completion rate",
-                "Finalize RMA process documentation",
-                "Conduct training session for new team members",
-                "Review and update all SOPs with feedback"
+                "Organize the invoices in the office. Keep paper invoices organization up to date",
+                "Finalize the Manny driver's document on SOP for more convenient delivery ETA",
+                "Clean the 2026 pickup board data document for data visualization",
+                "Finish the open house invitation document and prepartion"
             ],
             office: [
-                "Implement QR code scanning for inventory verification",
-                "Digital pick tickets rollout to warehouse tablets",
-                "Monthly performance review with supervisor"
+                "September Open House"
             ],
             suggestions: [
-                { text: "Dashboard Improvements: Add real-time pickup status tracking" },
-                { text: "Automation: Auto-email reminders for customers with open pickups" },
-                { text: "Analytics: Track weekly pickup patterns to optimize staffing" },
-                { text: "Integration: Connect ERP with warehouse management system" }
+                { text: "Delivery: Truck GPS Tracking" },
+                { text: "Barcode scanning of merchandise: ease of inventory and credit issue with returned items" },
+                { text: "Analytics: ERP customer YTD sales amount visualization" }
             ]
         }];
 
@@ -991,10 +987,10 @@
             label: "Before Order",
             isParallel: true,
             steps: [
-                { label: "Availability Check", color: "blue", thoughts: ["Real-time inventory sync to prevent overselling", "Automated backorder alerts for customers"] },
-                { label: "Product Questions", color: "blue", thoughts: ["Color, material, and dimension specifications", "AI chatbot for instant product information"] },
-                { label: "Recommendations", color: "blue", thoughts: ["AI-powered recommendations based on price range, similar products, dimension matching, and availability"] },
-                { label: "Pricing", color: "blue", thoughts: ["Dynamic pricing strategies", "Volume discounts for bulk orders"] }
+                { label: "Availability Check", color: "blue", thoughts: ["Automated backorder alerts for customers"] },
+                { label: "Product Questions", color: "blue", thoughts: ["AI chatbot for common product information questions"] },
+                { label: "Recommendations", color: "blue", thoughts: ["Website recommendations of alternatives for similar products"] },
+                { label: "Pricing", color: "blue"}
             ]
         }, {
             label: "Place Order",
