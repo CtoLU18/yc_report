@@ -39,7 +39,7 @@
             margin: 0;
             padding: 0;
         }
-        /* ----- login overlay (fixed) ----- */
+        /* ----- login ----- */
         #loginScreen {
             display: flex !important;
             justify-content: center;
@@ -741,6 +741,11 @@
         <div class="login-box">
             <h1>Lareina Chen</h1>
             <p class="subtitle">Monthly Report Dashboard</p>
+            <!-- HINT SECTION -->
+            <div class="hint">
+                <span class="hint-icon">💡</span>
+                <strong>Hint:</strong> Please enter your name
+            </div>
             <input type="password" id="passwordInput" placeholder="Enter password" autofocus>
             <div class="error-msg" id="loginError"></div>
             <button id="loginBtn">Access Dashboard</button>
@@ -858,10 +863,9 @@
 
     <script>
         const ENCODED_PASSWORDS = [
-            'bGFyZWluYQ==',  // lareina
-            'a2VudA==',      // kent
-            'Y2hlbHNlYQ==',  // chelsea
-            'eXVraQ=='       // yuki
+            'a2VudA==',      
+            'Y2hlbHNlYQ==', 
+            'eXVraQ=='      
         ];
 
         // ============================================================
@@ -891,7 +895,7 @@
         });
 
         // ============================================================
-        //  LOGIN VERIFICATION - FIXED!
+        //  LOGIN VERIFICATION
         // ============================================================
 
         function verifyLogin() {
@@ -943,7 +947,59 @@
         }
 
         // ============================================================
-        //  SESSION CHECK (Auto-login for 4 hours)
+        //  LOGIN VERIFICATION
+        // ============================================================
+
+        function verifyLogin() {
+            const passwordInput = document.getElementById('passwordInput');
+            const error = document.getElementById('loginError');
+            const password = passwordInput.value.trim();
+
+            if (!password) {
+                error.textContent = 'Please enter your name.';
+                return;
+            }
+
+            // Convert to lowercase for case-insensitive comparison
+            const passwordLower = password.toLowerCase();
+
+            // Check if the lowercase version matches any valid password
+            const isAuthenticated = VALID_PASSWORDS.includes(passwordLower);
+
+            if (isAuthenticated) {
+                // Success - show dashboard
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('home').classList.add('active');
+                error.textContent = '';
+                passwordInput.value = '';
+
+                // Initialize dashboard
+                setDate();
+                switchJobMonth(0);
+                switchReflectionMonth(0);
+                renderWorkflow();
+
+                // Store session
+                sessionStorage.setItem('authenticated', 'true');
+                sessionStorage.setItem('auth_time', Date.now().toString());
+            } else {
+                error.textContent = '❌ Incorrect name. Please try again.';
+                passwordInput.value = '';
+                passwordInput.focus();
+
+                // Brute force protection
+                const btn = document.getElementById('loginBtn');
+                btn.disabled = true;
+                btn.textContent = '⏳ Please wait...';
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Access Dashboard';
+                }, 1500);
+            }
+        }
+    
+        // ============================================================
+        //  SESSION CHECK
         // ============================================================
 
         document.addEventListener('DOMContentLoaded', function() {
