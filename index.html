@@ -36,20 +36,10 @@
         body {
             height: 100%;
             background: var(--off);
+            margin: 0;
+            padding: 0;
         }
-        .view {
-            display: none;
-            min-height: 100vh;
-        }
-        .view.active {
-            display: block;
-        }
-        #home {
-            background: var(--off);
-            overflow-x: hidden;
-        }
-
-        /* ===== LOGIN SCREEN ===== */
+        /* ----- login overlay (fixed) ----- */
         #loginScreen {
             display: flex !important;
             justify-content: center;
@@ -63,9 +53,12 @@
             right: 0;
             bottom: 0;
             z-index: 9999;
+            transition: opacity 0.3s ease;
         }
         #loginScreen.hidden {
             display: none !important;
+            opacity: 0;
+            pointer-events: none;
         }
         #loginScreen .login-box {
             background: white;
@@ -128,7 +121,17 @@
             transform: scale(0.98);
         }
 
-        /* ===== MAIN DASHBOARD ===== */
+        /* ----- main dashboard (always visible, but hidden until login) ----- */
+        #home {
+            display: none;          /* hidden by default */
+            min-height: 100vh;
+            background: var(--off);
+            overflow-x: hidden;
+        }
+        #home.active {
+            display: block;         /* shown after login */
+        }
+
         .home-header {
             background: var(--navy);
             color: var(--white);
@@ -490,7 +493,7 @@
             font-size: 12px;
         }
 
-        /* ===== WORKFLOW MAP ===== */
+        /* workflow */
         .workflow-card {
             grid-column: span 12;
             background: white;
@@ -733,7 +736,7 @@
 </head>
 <body>
 
-    <!-- ===== LOGIN SCREEN ===== -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen">
         <div class="login-box">
             <h1>Lareina Chen</h1>
@@ -744,8 +747,8 @@
         </div>
     </div>
 
-    <!-- ===== MAIN DASHBOARD ===== -->
-    <div id="home" class="view">
+    <!-- MAIN DASHBOARD -->
+    <div id="home">
         <div class="home-header">
             <div class="hh-left">
                 <div class="hh-eyebrow">Supply Chain & Customer Data Analyst</div>
@@ -855,7 +858,7 @@
 
     <script>
         // ============================================================
-        //  🔐 SET AUTHORIZED PASSWORDS HERE
+        //  AUTHORIZED PASSWORDS
         // ============================================================
         var AUTHORIZED_PASSWORDS = [
             'lareina',
@@ -865,30 +868,26 @@
         ];
 
         // ============================================================
-        //  LOGIN VERIFICATION - FIXED
+        //  LOGIN VERIFICATION - FIXED (shows dashboard)
         // ============================================================
         function verifyLogin() {
             var passwordInput = document.getElementById('passwordInput');
             var error = document.getElementById('loginError');
             var password = passwordInput.value.trim();
 
-            // Check if password is in the authorized list
             if (AUTHORIZED_PASSWORDS.indexOf(password) !== -1) {
-                // Success - show dashboard
+                // hide login overlay
                 var loginScreen = document.getElementById('loginScreen');
-                var home = document.getElementById('home');
-                
-                // Hide login screen
                 loginScreen.classList.add('hidden');
-                
-                // Show dashboard
-                home.style.display = 'block';
+
+                // show dashboard
+                var home = document.getElementById('home');
                 home.classList.add('active');
-                
+
                 error.textContent = '';
                 passwordInput.value = '';
-                
-                // Initialize dashboard
+
+                // initialize dashboard content
                 setDate();
                 switchJobMonth(0);
                 switchReflectionMonth(0);
@@ -900,10 +899,7 @@
             }
         }
 
-        // Use onclick on the button instead of inline
         document.getElementById('loginBtn').addEventListener('click', verifyLogin);
-
-        // Allow Enter key to submit
         document.getElementById('passwordInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 verifyLogin();
@@ -1099,7 +1095,7 @@
                     stepsHtml = `
                         <span class="flow-step green">Receive Paperwork${thoughtTip(['Digital pick tickets for efficient order retrieval', 'QR scanning for faster processing', 'Barcode validation to ensure accuracy'])}</span>
                         <span class="flow-arrow">→</span>
-                        <span class="flow-step green">Find Item${thoughtTip(['Inventory location tracking for quick item retrieval')}</span>
+                        <span class="flow-step green">Find Item${thoughtTip(['Inventory location tracking for quick item retrieval'])}</span>
                         <span class="flow-arrow">→</span>
                         <span class="flow-step green">Load Truck${thoughtTip(['Loading optimization for space efficiency'])}</span>
                     `;
