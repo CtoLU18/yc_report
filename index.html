@@ -815,7 +815,7 @@
                     <h3>Workflow Map</h3>
                 </div>
                 <div class="workflow-hint">
-                    Hover over any colored step to see thoughts and improvement ideas.
+                    Simplified overview of the NJ warehouse. Hover over steps to see some thoughts.
                 </div>
                 <div class="flow-container" id="workflowContainer">
                     <!-- rendered by JS -->
@@ -995,9 +995,9 @@
         }, {
             label: "Place Order",
             steps: [
-                { label: "Phone", color: "purple", thoughts: ["Call center integration for seamless order entry", "Voice recognition for faster processing"] },
-                { label: "Email", color: "purple", thoughts: ["Automated order processing with confirmation"] },
-                { label: "Website", color: "purple", thoughts: ["E-commerce platform with real-time inventory visibility"] }
+                { label: "Phone", color: "purple", thoughts: ["More convenient way to send confirmation emails through ERP, bulk sales order can't do send email"] },
+                { label: "Email", color: "purple", thoughts: ["An office order email that everyone has access to for prompt processing when anyone has time"] },
+                { label: "Website", color: "purple" }
             ],
             isOrder: true
         }, {
@@ -1013,7 +1013,7 @@
             label: "Follow Up",
             isFollowUp: true
         }, {
-            label: "After Service",
+            label: "After-sales Service",
             isAfterService: true
         }];
 
@@ -1057,9 +1057,9 @@
                             <span class="flow-arrow">→</span>
                             <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Collect payment</span>
                             <span class="flow-arrow">→</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Paperwork${thoughtTip(['Digital scanning of signed paperwork for easier filing and future trace back when needed'])}</span>
+                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Will Call Paperwork${thoughtTip(['Digital scanning of signed paperwork for easier filing and future trace back when needed'])}</span>
                             <span class="flow-arrow">→</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Warehouse</span>
+                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Driver head to warehouse for loading</span>
                         </span>
                         <span style="display:block; width:100%; margin-top:4px; padding:4px 0 4px 8px; border-left:2px dashed #D1D5DB;">
                             <span style="font-size:9px; font-weight:700; color:var(--mid); text-transform:uppercase;">Delivery:</span>
@@ -1069,15 +1069,15 @@
                             <span class="flow-arrow">→</span>
                             <span class="flow-step red" style="font-size:11px; padding:3px 10px;">CFT calculation</span>
                             <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Warehouse prep</span>
+                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Warehouse prepull${thoughtTip(['Barcode Scan to make sure items boxes are correct and not missing'])}</span>
                             <span class="flow-arrow">→</span>
                             <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Payment</span>
                             <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Paperwork${thoughtTip(['Digital scanning of signed paperwork for easier filing and future trace back when needed'])}</span>
+                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Invoices Paperwork${thoughtTip(['Digital scanning of signed paperwork for easier filing and future trace back when needed'])}</span>
                             <span class="flow-arrow">→</span>
                             <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Trucking route plan</span>
                             <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Warehouse</span>
+                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Warehouse DDAY morning load</span>
                         </span>
                     `;
                 } else if (row.isPayment) {
@@ -1090,18 +1090,18 @@
                         <span class="sep-pipe">|</span>
                         <span class="flow-step gold">Credit Card</span>
                         <span class="sep-pipe">|</span>
-                        <span class="flow-step gold">CIT</span>
+                        <span class="flow-step gold">CIT${thoughtTip(['Need Time Processing'])}</span>
                         <span class="sep-pipe">|</span>
                         <span class="flow-step gold">Wire</span>
-                        <span class="payment-note"><span class="highlight">Customer can call/email ahead to confirm prepaid or at the moment</span></span>
+                        <span class="payment-note"><span class="highlight">Customer can call/email ahead for early process, prepaid confirmation or at the moment</span></span>
                     `;
                 } else if (row.isWarehouse) {
                     stepsHtml = `
                         <span class="flow-step green">Receive Paperwork${thoughtTip(['Digital pick tickets for efficient order retrieval', 'QR scanning for faster processing', 'Barcode validation to ensure accuracy'])}</span>
                         <span class="flow-arrow">→</span>
-                        <span class="flow-step green">Find Item${thoughtTip(['Inventory location tracking for quick item retrieval', 'Real-time stock updates to prevent delays'])}</span>
+                        <span class="flow-step green">Find Item${thoughtTip(['Inventory location tracking for quick item retrieval')}</span>
                         <span class="flow-arrow">→</span>
-                        <span class="flow-step green">Load Truck${thoughtTip(['Loading optimization for space efficiency', 'Safety checks before departure'])}</span>
+                        <span class="flow-step green">Load Truck${thoughtTip(['Loading optimization for space efficiency'])}</span>
                     `;
                 } else if (row.isFollowUp) {
                     stepsHtml = `
@@ -1115,13 +1115,13 @@
                     `;
                 } else if (row.isAfterService) {
                     stepsHtml = `
-                        <span class="flow-step indigo">Damaged/Wrong/Missing${thoughtTip(['RMA tracking system to monitor returns', 'Parts lookup for quick identification', 'Returns analytics to identify patterns'])}</span>
+                        <span class="flow-step indigo">Damaged/Wrong/Missing${thoughtTip(['Parts lookup for quick identification'])}</span>
                         <span class="flow-arrow">→</span>
-                        <span class="flow-step indigo">Customer Reach Out${thoughtTip(['Ticket system for organized issue tracking', 'CSAT tracking to measure satisfaction'])}</span>
+                        <span class="flow-step indigo">Customer Reach Out${thoughtTip(['Tracking system for organized issue tracking', 'Maybe a shared office email for replacements, returns, and parts requests so customer issues are handled without waiting for one person'])}</span>
                         <span class="flow-arrow">→</span>
                         <span class="flow-step indigo">Replacement</span>
                         <span class="sep-pipe">|</span>
-                        <span class="flow-step indigo">Credit</span>
+                        <span class="flow-step indigo">Credit${thoughtTip(['Alerts for open RMA over a certain period of time'])}</span>
                         <span class="sep-pipe">|</span>
                         <span class="flow-step indigo">Parts Order</span>
                     `;
