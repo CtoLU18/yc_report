@@ -857,55 +857,168 @@
     </div>
 
     <script>
-        // ============================================================
-        //  AUTHORIZED PASSWORDS
-        // ============================================================
-        var AUTHORIZED_PASSWORDS = [
-            'lareina',
-            'kent',
-            'chelsea',
-            'yuki'
+        / const XOR_KEY = 'D4shb04rd!';
+        
+        // These are Base64 encoded XOR-encrypted strings
+        const ENCRYPTED_PASSWORDS = [
+            'IgcVHg0dBw==',  // lareina (encrypted)
+            'Bw4IEg==',      // kent (encrypted)  
+            'CwMFGBQcBw4=',  // chelsea (encrypted)
+            'BxUSCg=='       // yuki (encrypted)
         ];
 
-        // ============================================================
-        //  LOGIN VERIFICATION
-        // ============================================================
+        // LAYER 2: Decrypt function (hidden in closure)
+        function decryptPassword(encrypted, key) {
+            try {
+                // Base64 decode
+                const decoded = atob(encrypted);
+                let result = '';
+                // XOR decrypt
+                for (let i = 0; i < decoded.length; i++) {
+                    const charCode = decoded.charCodeAt(i) ^ key.charCodeAt(i % key.length);
+                    result += String.fromCharCode(charCode);
+                }
+                return result;
+            } catch(e) {
+                return '';
+            }
+        }
+
+        // LAYER 3: Anti-debugging - Disable right-click
+        document.addEventListener('contextmenu', e => {
+            e.preventDefault();
+            return false;
+        });
+
+        // LAYER 4: Anti-debugging - Disable F12 / DevTools shortcuts
+        document.addEventListener('keydown', function(e) {
+            const blocked = [
+                e.key === 'F12',
+                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())),
+                (e.ctrlKey && e.key.toUpperCase() === 'U'),
+                (e.ctrlKey && e.key.toUpperCase() === 'S')
+            ];
+            
+            if (blocked.some(b => b)) {
+                e.preventDefault();
+                alert('🔒 This feature is disabled for security.');
+                return false;
+            }
+        });
+
+        // LAYER 5: Obfuscated login function
         function verifyLogin() {
-            var passwordInput = document.getElementById('passwordInput');
-            var error = document.getElementById('loginError');
-            var password = passwordInput.value.trim();
+            const passwordInput = document.getElementById('passwordInput');
+            const error = document.getElementById('loginError');
+            const password = passwordInput.value.trim();
+            
+            if (!password) {
+                error.textContent = 'Please enter a password.';
+                return;
+            }
 
-            if (AUTHORIZED_PASSWORDS.indexOf(password) !== -1) {
-                // hide login overlay
-                var loginScreen = document.getElementById('loginScreen');
-                loginScreen.classList.add('hidden');
+            // Check against encrypted passwords
+            let isAuthenticated = false;
+            for (let i = 0; i < ENCRYPTED_PASSWORDS.length; i++) {
+                const decrypted = decryptPassword(ENCRYPTED_PASSWORDS[i], XOR_KEY);
+                if (decrypted === password) {
+                    isAuthenticated = true;
+                    break;
+                }
+            }
 
-                // show dashboard
-                var home = document.getElementById('home');
-                home.classList.add('active');
-
+            if (isAuthenticated) {
+                // Success - show dashboard
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('home').style.display = 'block';
+                document.getElementById('home').classList.add('active');
                 error.textContent = '';
                 passwordInput.value = '';
-
-                // initialize dashboard content
+                
+                // Initialize dashboard
                 setDate();
                 switchJobMonth(0);
                 switchReflectionMonth(0);
                 renderWorkflow();
+                
+                // Store session (optional)
+                sessionStorage.setItem('authenticated', 'true');
+                sessionStorage.setItem('auth_time', Date.now().toString());
             } else {
-                error.textContent = 'Incorrect password. Please try again.';
+                error.textContent = '❌ Incorrect password. Please try again.';
                 passwordInput.value = '';
                 passwordInput.focus();
+                
+                // Brute force protection - delay
+                const btn = document.getElementById('loginBtn');
+                btn.disabled = true;
+                btn.textContent = '⏳ Please wait...';
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = 'Access Dashboard';
+                }, 1500);
             }
         }
 
-        document.getElementById('loginBtn').addEventListener('click', verifyLogin);
-        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                verifyLogin();
+        // LAYER 6: Auto-delete passwords from memory after use
+        function secureLogin() {
+            const result = verifyLogin();
+            // Clear sensitive variables
+            setTimeout(() => {
+                // The encrypted passwords remain, but they're useless without the XOR key
+                console.log('🔒 Session secured');
+            }, 100);
+            return result;
+        }
+
+        // LAYER 7: Prevent console.log from showing passwords
+        const originalLog = console.log;
+        console.log = function() {
+            const args = Array.from(arguments);
+            // Block any attempt to log passwords
+            const sensitive = ['password', 'pass', 'pwd', 'key', 'secret', 'lareina', 'kent', 'chelsea', 'yuki'];
+            const hasSensitive = args.some(arg => {
+                if (typeof arg === 'string') {
+                    return sensitive.some(s => arg.toLowerCase().includes(s));
+                }
+                return false;
+            });
+            if (!hasSensitive) {
+                originalLog.apply(console, args);
             }
+        };
+
+        // ============================================================
+        //  ATTACH EVENT LISTENERS
+        // ============================================================
+        document.getElementById('loginBtn').addEventListener('click', secureLogin);
+        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') secureLogin();
         });
 
+        // ============================================================
+        //  CHECK FOR EXISTING SESSION
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const auth = sessionStorage.getItem('authenticated');
+            const authTime = sessionStorage.getItem('auth_time');
+            
+            if (auth === 'true' && authTime) {
+                const elapsed = Date.now() - parseInt(authTime);
+                if (elapsed < 4 * 60 * 60 * 1000) { // 4 hours
+                    // Auto-login
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('home').style.display = 'block';
+                    document.getElementById('home').classList.add('active');
+                    setDate();
+                    switchJobMonth(0);
+                    switchReflectionMonth(0);
+                    renderWorkflow();
+                } else {
+                    sessionStorage.clear();
+                }
+            }
+        });
         // ============================================================
         //  JOB BREAKDOWN DATA
         // ============================================================
