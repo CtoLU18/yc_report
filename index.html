@@ -3,1347 +3,582 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lareina Chen · Monthly Report Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Lareina Chen · Dashboard</title>
     <style>
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        :root {
-            --white: #FFFFFF;
-            --off: #F4F5F7;
-            --lg: #E8EAEE;
-            --lb: #C8D8EC;
-            --blue: #2563EB;
-            --navy: #0F1B2D;
-            --mid: #6B7280;
-            --dark: #1C1C1E;
-            --r: 8px;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --danger: #EF4444;
-            --purple: #8B5CF6;
-            font-family: 'DM Sans', sans-serif;
-            color: var(--dark);
-        }
-        html,
-        body {
-            height: 100%;
-            background: var(--off);
-            margin: 0;
-            padding: 0;
-        }
-        /* ----- login ----- */
-        #loginScreen {
-            display: flex !important;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: var(--navy);
-            padding: 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 9999;
-            transition: opacity 0.3s ease;
-        }
-        #loginScreen.hidden {
-            display: none !important;
-            opacity: 0;
-            pointer-events: none;
-        }
-        #loginScreen .login-box {
-            background: white;
-            border-radius: 24px;
-            padding: 48px 40px;
-            max-width: 400px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            text-align: center;
-        }
-        #loginScreen .login-box h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 4px;
-        }
-        #loginScreen .login-box .subtitle {
-            font-size: 14px;
-            color: var(--mid);
-            margin-bottom: 28px;
-        }
-        #loginScreen .login-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--lg);
-            border-radius: 12px;
-            font-size: 15px;
-            font-family: 'DM Sans', sans-serif;
-            outline: none;
-            transition: border-color 0.2s;
-            margin-bottom: 12px;
-        }
-        #loginScreen .login-box input:focus {
-            border-color: var(--blue);
-        }
-        #loginScreen .login-box .error-msg {
-            color: var(--danger);
-            font-size: 13px;
-            margin-bottom: 12px;
-            min-height: 20px;
-        }
-        #loginScreen .login-box button {
-            width: 100%;
-            padding: 12px;
-            background: var(--blue);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            transition: background 0.2s;
-        }
-        #loginScreen .login-box button:hover {
-            background: #1D4ED8;
-        }
-        #loginScreen .login-box button:active {
-            transform: scale(0.98);
-        }
-
-        /* ----- main dashboard ----- */
-        #home {
-            display: none;          
-            min-height: 100vh;
-            background: var(--off);
-            overflow-x: hidden;
-        }
-        #home.active {
-            display: block;         
-        }
-
-        .home-header {
-            background: var(--navy);
-            color: var(--white);
-            padding: 48px 56px 36px;
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 24px;
-            flex-wrap: wrap;
-            position: relative;
-            overflow: hidden;
-        }
-        .home-header::before {
-            content: '';
-            position: absolute;
-            top: -60px;
-            right: -60px;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: rgba(37, 99, 235, .18);
-        }
-        .home-header::after {
-            content: '';
-            position: absolute;
-            bottom: -40px;
-            right: 120px;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            background: rgba(200, 216, 236, .07);
-        }
-        .hh-eyebrow {
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: .18em;
-            text-transform: uppercase;
-            color: var(--lb);
-            margin-bottom: 10px;
-        }
-        .hh-name {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(44px, 7vw, 80px);
-            font-weight: 900;
-            line-height: .95;
-            letter-spacing: -.01em;
-        }
-        .hh-name em {
-            font-style: italic;
-            color: var(--lb);
-        }
-        .hh-role {
-            margin-top: 14px;
-            font-size: 14px;
-            font-weight: 300;
-            color: rgba(255, 255, 255, .6);
-        }
-        .hh-right {
-            text-align: right;
-        }
-        .hh-date {
-            font-family: 'DM Mono', monospace;
-            font-size: 11px;
-            color: rgba(255, 255, 255, .35);
-        }
-        .hh-badge {
-            margin-top: 8px;
-            display: inline-block;
-            padding: 6px 16px;
-            border: 1px solid rgba(200, 216, 236, .3);
-            border-radius: 40px;
-            font-size: 11.5px;
-            color: var(--lb);
-        }
-
-        .home-grid {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-            padding: 40px 40px 60px;
-        }
-
-        .card-white {
-            background: white;
-            border-radius: 24px;
-            padding: 24px 28px;
-            border: 1.5px solid var(--lg);
-        }
-
-        .section-title-with-dropdown {
-            grid-column: span 12;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 8px;
-            margin-top: 8px;
-        }
-        .section-title-with-dropdown h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--navy);
-            border-left: 4px solid var(--blue);
-            padding-left: 16px;
-            margin: 0;
-        }
-        .section-title-with-dropdown select {
-            padding: 8px 16px;
-            border-radius: 24px;
-            border: 1.5px solid var(--lg);
-            background: white;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            outline: none;
-            font-family: 'DM Sans';
-            min-width: 180px;
-            flex-shrink: 0;
-        }
-        .section-title-with-dropdown select:focus {
-            border-color: var(--blue);
-        }
-
-        .month-selector-group {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #EFF3F8;
-        }
-        .month-selector-group label {
-            font-weight: 600;
-            font-size: 13px;
-            color: var(--navy);
-            white-space: nowrap;
-        }
-        .month-selector-group select {
-            padding: 8px 16px;
-            border-radius: 24px;
-            border: 1.5px solid var(--lg);
-            background: white;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            outline: none;
-            font-family: 'DM Sans';
-            min-width: 180px;
-        }
-        .month-selector-group select:focus {
-            border-color: var(--blue);
-        }
-
-        .task-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-        .task-row {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-weight: 600;
-            font-size: 16px;
-        }
-        .task-name {
-            color: var(--dark);
-        }
-        .task-percent {
-            font-family: 'DM Mono', monospace;
-            background: var(--off);
-            padding: 2px 12px;
-            border-radius: 40px;
-            font-size: 13px;
-        }
-        .progress-bg {
-            height: 8px;
-            background: var(--lg);
-            border-radius: 20px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 20px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-        .task-description {
-            font-size: 12.5px;
-            color: var(--mid);
-            line-height: 1.5;
-            margin-top: 4px;
-            padding-left: 4px;
-        }
-
-        .file-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-top: 8px;
-        }
-        .file-card {
-            background: var(--off);
-            border-radius: 16px;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-decoration: none;
-            color: var(--dark);
-            border: 1.5px solid transparent;
-            transition: all 0.2s;
-            cursor: pointer;
-        }
-        .file-card:hover {
-            border-color: var(--blue);
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, .08);
-        }
-        .file-icon {
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-        .file-info {
-            flex: 1;
-        }
-        .file-name {
-            font-weight: 600;
-            font-size: 14px;
-            display: block;
-        }
-        .file-desc {
-            font-size: 11px;
-            color: var(--mid);
-            display: block;
-            margin-top: 2px;
-        }
-        .file-tag {
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            background: var(--blue);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-        }
-
-        .reflection-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-            grid-column: span 12;
-            width: 100%;
-        }
-        .reflection-card {
-            background: white;
-            border-radius: 20px;
-            padding: 22px;
-            border: 1.5px solid var(--lg);
-            transition: transform 0.2s;
-            display: flex;
-            flex-direction: column;
-            min-height: 280px;
-            height: 100%;
-        }
-        .reflection-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-        }
-        .reflection-card h4 {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--navy);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 2px solid #EFF3F8;
-            padding-bottom: 10px;
-            flex-shrink: 0;
-        }
-        .reflection-card ul {
-            list-style: none;
-            padding: 0;
-            flex: 1;
-        }
-        .reflection-card ul li {
-            padding: 8px 0;
-            border-bottom: 1px solid #F0F2F5;
-            font-size: 13px;
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
-        }
-        .reflection-card ul li:last-child {
-            border-bottom: none;
-        }
-        .bullet {
-            color: var(--blue);
-            font-weight: 700;
-        }
-
-        .checklist-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #F0F2F5;
-            font-size: 13px;
-        }
-        .checklist-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-top: 1px;
-            accent-color: var(--blue);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-        .checklist-item label {
-            flex: 1;
-            cursor: pointer;
-            color: var(--dark);
-            line-height: 1.4;
-        }
-
-        .suggestions-list {
-            list-style: none;
-            padding: 0;
-            flex: 1;
-        }
-        .suggestions-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid #F0F2F5;
-            font-size: 13px;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-        .suggestions-list li:last-child {
-            border-bottom: none;
-        }
-        .suggestion-text strong {
-            display: block;
-            color: var(--dark);
-        }
-        .suggestion-text span {
-            color: var(--mid);
-            font-size: 12px;
-        }
-
-        /* workflow */
-        .workflow-card {
-            grid-column: span 12;
-            background: white;
-            border-radius: 24px;
-            padding: 24px 28px;
-            border: 1.5px solid var(--lg);
-            transition: all 0.2s;
-            overflow-x: auto;
-        }
-        .workflow-card:hover {
-            border-color: var(--blue);
-        }
-        .workflow-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .workflow-header h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--navy);
-        }
-
-        .workflow-hint {
-            font-size: 12px;
-            color: var(--mid);
-            margin-bottom: 16px;
-            padding: 8px 14px;
-            background: #F3F4F6;
-            border-radius: 8px;
-            border-left: 3px solid var(--blue);
-        }
-
-        .flow-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            min-width: 700px;
-        }
-
-        .flow-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 4px 6px;
-            padding: 8px 0;
-            border-bottom: 1px solid #F0F2F5;
-            border-radius: 6px;
-            transition: background 0.2s;
-        }
-        .flow-row:last-child {
-            border-bottom: none;
-        }
-
-        .flow-row:nth-child(1) { background: #F0F7FF; }
-        .flow-row:nth-child(2) { background: #F5F3FF; }
-        .flow-row:nth-child(3) { background: #ECFDF5; }
-        .flow-row:nth-child(4) { background: #FFFBEB; }
-        .flow-row:nth-child(5) { background: #F0FDF4; }
-        .flow-row:nth-child(6) { background: #FEFCE8; }
-        .flow-row:nth-child(7) { background: #F5F3FF; }
-
-        .flow-label {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--mid);
-            letter-spacing: .05em;
-            text-transform: uppercase;
-            margin-right: 6px;
-            min-width: 80px;
-            padding: 2px 8px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 4px;
-        }
-
-        .flow-step {
-            background: var(--off);
-            border-radius: 30px;
-            padding: 5px 14px;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--dark);
-            border: 2px solid var(--lg);
-            white-space: nowrap;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            cursor: default;
-            position: relative;
-        }
-        .flow-step:hover {
-            transform: scale(1.02);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-
-        .flow-step .thought-tip {
-            visibility: hidden;
-            opacity: 0;
-            width: 260px;
-            background: var(--navy);
-            color: var(--white);
-            font-weight: 400;
-            font-size: 11px;
-            letter-spacing: 0;
-            padding: 12px 16px;
-            border-radius: 10px;
-            position: absolute;
-            z-index: 100;
-            bottom: calc(100% + 8px);
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            transition: opacity 0.2s ease, visibility 0.2s ease;
-            line-height: 1.6;
-            pointer-events: none;
-            text-align: left;
-            white-space: normal;
-        }
-        .flow-step .thought-tip::after {
-            content: '';
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 5px solid transparent;
-            border-top-color: var(--navy);
-        }
-        .flow-step:hover .thought-tip {
-            visibility: visible;
-            opacity: 1;
-        }
-        .thought-tip .tip-title {
-            font-weight: 700;
-            color: var(--lb);
-            display: block;
-            margin-bottom: 6px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: .05em;
-        }
-        .thought-tip .tip-content {
-            display: block;
-        }
-
-        .flow-step.blue { background: #DBEAFE; border-color: #2563EB; color: #1E40AF; }
-        .flow-step.green { background: #D1FAE5; border-color: #10B981; color: #065F46; }
-        .flow-step.gold { background: #FEF3C7; border-color: #F59E0B; color: #92400E; }
-        .flow-step.purple { background: #EDE9FE; border-color: #8B5CF6; color: #5B21B6; }
-        .flow-step.red { background: #FEE2E2; border-color: #EF4444; color: #991B1B; }
-        .flow-step.pink { background: #FCE7F3; border-color: #EC4899; color: #831843; }
-        .flow-step.indigo { background: #E0E7FF; border-color: #6366F1; color: #3730A3; }
-        .flow-step.teal { background: #CCFBF1; border-color: #14B8A6; color: #115E59; }
-        .flow-step.orange { background: #FFEDD5; border-color: #F97316; color: #9A3412; }
-
-        .flow-arrow {
-            font-size: 14px;
-            color: var(--mid);
-            font-weight: 300;
-            flex-shrink: 0;
-        }
-
-        .sep-pipe {
-            color: var(--mid);
-            font-weight: 300;
-            font-size: 16px;
-            opacity: 0.4;
-            margin: 0 2px;
-        }
-
-        .payment-note {
-            font-size: 10px;
-            color: var(--mid);
-            font-style: italic;
-            margin-left: 4px;
-            white-space: normal;
-        }
-        .payment-note .highlight {
-            background: #FEF3C7;
-            padding: 0 6px;
-            border-radius: 4px;
-            color: #92400E;
-        }
-
-        .home-footer {
-            background: var(--navy);
-            color: rgba(255, 255, 255, .35);
-            font-size: 11px;
-            padding: 16px 56px;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        @media(max-width:900px) {
-            .home-header {
-                padding: 32px 24px 24px;
-            }
-            .home-grid {
-                padding: 20px 16px 40px;
-                gap: 12px;
-            }
-            .reflection-grid {
-                grid-template-columns: 1fr;
-            }
-            .file-grid {
-                grid-template-columns: 1fr;
-            }
-            .section-title-with-dropdown {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .section-title-with-dropdown select {
-                width: 100%;
-            }
-            .flow-step {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-            .flow-container {
-                min-width: 500px;
-            }
-            .flow-label {
-                min-width: 60px;
-                font-size: 9px;
-            }
-            .flow-step .thought-tip {
-                width: 200px;
-                font-size: 10px;
-            }
-            #loginScreen .login-box {
-                padding: 32px 24px;
-            }
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{height:100vh;background:#0F1B2D;font-family:'DM Sans',sans-serif}
+        #l{display:flex;justify-content:center;align-items:center;height:100vh;background:#0F1B2D;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999}
+        #l.h{display:none!important}
+        #l .b{background:#fff;border-radius:24px;padding:48px 40px;max-width:420px;width:100%;text-align:center}
+        #l .b h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:#0F1B2D;margin-bottom:4px}
+        #l .b .s{font-size:14px;color:#6B7280;margin-bottom:24px}
+        #l .b .h{font-size:13px;color:#6B7280;text-align:left;margin-bottom:12px}
+        #l .b input{width:100%;padding:12px 16px;border:2px solid #E8EAEE;border-radius:12px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px}
+        #l .b input:focus{border-color:#2563EB}
+        #l .b .e{color:#EF4444;font-size:13px;margin-bottom:12px;min-height:20px}
+        #l .b button{width:100%;padding:12px;background:#2563EB;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+        #l .b button:hover{background:#1D4ED8}
+        #d{display:none;min-height:100vh;background:#F4F5F7;overflow-x:hidden}
+        #d.a{display:block}
+        .dh{background:#0F1B2D;color:#fff;padding:48px 56px 36px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;position:relative;overflow:hidden}
+        .dh::before{content:"";position:absolute;top:-60px;right:-60px;width:300px;height:300px;border-radius:50%;background:rgba(37,99,235,.18)}
+        .dh::after{content:"";position:absolute;bottom:-40px;right:120px;width:180px;height:180px;border-radius:50%;background:rgba(200,216,236,.07)}
+        .hl{flex:1}.he{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#C8D8EC;margin-bottom:10px}
+        .hn{font-family:"Playfair Display",serif;font-size:clamp(44px,7vw,80px);font-weight:900;line-height:.95;letter-spacing:-.01em}
+        .hn em{font-style:italic;color:#C8D8EC}.hr{margin-top:14px;font-size:14px;font-weight:300;color:rgba(255,255,255,.6)}
+        .hr2{text-align:right}.hd{font-family:"DM Mono",monospace;font-size:11px;color:rgba(255,255,255,.35)}
+        .hb{margin-top:8px;display:inline-block;padding:6px 16px;border:1px solid rgba(200,216,236,.3);border-radius:40px;font-size:11.5px;color:#C8D8EC}
+        .hg{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;padding:40px 40px 60px}
+        .cw{background:#fff;border-radius:24px;padding:24px 28px;border:1.5px solid #E8EAEE}
+        .fg{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+        .fc{background:#F4F5F7;border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;text-decoration:none;color:#1C1C1E;border:1.5px solid transparent;transition:all .2s;cursor:pointer}
+        .fc:hover{border-color:#2563EB;background:#fff;transform:translateY(-2px);box-shadow:0 4px 12px rgba(37,99,235,.08)}
+        .fi{font-size:28px;flex-shrink:0}.fi2{flex:1}.fn{font-weight:600;font-size:14px;display:block}
+        .fd{font-size:11px;color:#6B7280;display:block;margin-top:2px}
+        .ft{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;background:#2563EB;color:#fff;padding:2px 8px;border-radius:12px}
+        .mg{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #EFF3F8}
+        .mg label{font-weight:600;font-size:13px;color:#0F1B2D}
+        .mg select{padding:8px 16px;border-radius:24px;border:1.5px solid #E8EAEE;background:#fff;font-size:13px;font-weight:500;cursor:pointer;outline:none;font-family:"DM Sans",sans-serif;min-width:180px}
+        .mg select:focus{border-color:#2563EB}
+        .ts{display:flex;flex-direction:column;gap:24px}
+        .tr{display:flex;flex-direction:column;gap:6px}
+        .th{display:flex;justify-content:space-between;align-items:baseline;font-weight:600;font-size:16px}
+        .tn{color:#1C1C1E}.tp{font-family:"DM Mono",monospace;background:#F4F5F7;padding:2px 12px;border-radius:40px;font-size:13px}
+        .pb{height:8px;background:#E8EAEE;border-radius:20px;overflow:hidden}
+        .pf{height:100%;border-radius:20px;width:0%;transition:width .5s ease}
+        .td{font-size:12.5px;color:#6B7280;line-height:1.5;margin-top:4px;padding-left:4px}
+        .wc{grid-column:span 12;background:#fff;border-radius:24px;padding:24px 28px;border:1.5px solid #E8EAEE;transition:all .2s;overflow-x:auto}
+        .wc:hover{border-color:#2563EB}
+        .wh{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+        .wh h3{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:#0F1B2D}
+        .wi{font-size:12px;color:#6B7280;margin-bottom:16px;padding:8px 14px;background:#F3F4F6;border-radius:8px;border-left:3px solid #2563EB}
+        .fc2{display:flex;flex-direction:column;gap:8px;min-width:700px}
+        .fr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;padding:8px 0;border-bottom:1px solid #F0F2F5;border-radius:6px}
+        .fr:last-child{border-bottom:none}
+        .fr:nth-child(1){background:#F0F7FF}.fr:nth-child(2){background:#F5F3FF}.fr:nth-child(3){background:#ECFDF5}.fr:nth-child(4){background:#FFFBEB}.fr:nth-child(5){background:#F0FDF4}.fr:nth-child(6){background:#FEFCE8}.fr:nth-child(7){background:#F5F3FF}
+        .fl{font-size:10px;font-weight:700;color:#6B7280;letter-spacing:.05em;text-transform:uppercase;margin-right:6px;min-width:80px;padding:2px 8px;background:rgba(255,255,255,.6);border-radius:4px}
+        
+        /* FIXED TOOLTIP STYLES */
+        .fs {
+            background:#F4F5F7;
+            border-radius:30px;
+            padding:5px 14px;
+            font-size:12px;
+            font-weight:500;
+            color:#1C1C1E;
+            border:2px solid #E8EAEE;
+            white-space:nowrap;
+            transition:all .2s;
+            display:inline-flex;
+            align-items:center;
+            gap:4px;
+            cursor:pointer;
+            position:relative;
+        }
+        .fs:hover {
+            transform:scale(1.02);
+            box-shadow:0 2px 8px rgba(0,0,0,.06);
+        }
+        
+        /* Tooltip container */
+        .fs .tt {
+            visibility:hidden;
+            opacity:0;
+            width:280px;
+            background:#0F1B2D;
+            color:#fff;
+            font-weight:400;
+            font-size:12px;
+            padding:14px 18px;
+            border-radius:10px;
+            position:absolute;
+            z-index:1000;
+            bottom:calc(100% + 12px);
+            left:50%;
+            transform:translateX(-50%);
+            box-shadow:0 8px 30px rgba(0,0,0,0.3);
+            transition:opacity .25s ease,visibility .25s ease;
+            line-height:1.6;
+            pointer-events:none;
+            text-align:left;
+            white-space:normal;
+            letter-spacing:0;
+        }
+        
+        /* Tooltip arrow */
+        .fs .tt::after {
+            content:'';
+            position:absolute;
+            top:100%;
+            left:50%;
+            transform:translateX(-50%);
+            border:6px solid transparent;
+            border-top-color:#0F1B2D;
+        }
+        
+        /* Show on hover */
+        .fs:hover .tt {
+            visibility:visible;
+            opacity:1;
+        }
+        
+        .fs .tt .ttt {
+            font-weight:700;
+            color:#C8D8EC;
+            display:block;
+            margin-bottom:6px;
+            font-size:10px;
+            text-transform:uppercase;
+            letter-spacing:.05em;
+        }
+        .fs .tt .ttc {
+            display:block;
+            color:#E8EAEE;
+        }
+        
+        .fs.blue{background:#DBEAFE;border-color:#2563EB;color:#1E40AF}
+        .fs.green{background:#D1FAE5;border-color:#10B981;color:#065F46}
+        .fs.gold{background:#FEF3C7;border-color:#F59E0B;color:#92400E}
+        .fs.purple{background:#EDE9FE;border-color:#8B5CF6;color:#5B21B6}
+        .fs.red{background:#FEE2E2;border-color:#EF4444;color:#991B1B}
+        .fs.pink{background:#FCE7F3;border-color:#EC4899;color:#831843}
+        .fs.indigo{background:#E0E7FF;border-color:#6366F1;color:#3730A3}
+        
+        .fa{font-size:14px;color:#6B7280;font-weight:300;flex-shrink:0}
+        .sp{color:#6B7280;font-weight:300;font-size:16px;opacity:.4;margin:0 2px}
+        .pn{font-size:10px;color:#6B7280;font-style:italic;margin-left:4px;white-space:normal}
+        .pn .hl{background:#FEF3C7;padding:0 6px;border-radius:4px;color:#92400E}
+        .sd{grid-column:span 12;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px;margin-top:8px}
+        .sd h2{font-family:"Playfair Display",serif;font-size:22px;font-weight:700;color:#0F1B2D;border-left:4px solid #2563EB;padding-left:16px;margin:0}
+        .sd select{padding:8px 16px;border-radius:24px;border:1.5px solid #E8EAEE;background:#fff;font-size:13px;font-weight:500;cursor:pointer;outline:none;font-family:"DM Sans",sans-serif;min-width:180px;flex-shrink:0}
+        .sd select:focus{border-color:#2563EB}
+        .rg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px;grid-column:span 12;width:100%}
+        .rc{background:#fff;border-radius:20px;padding:22px;border:1.5px solid #E8EAEE;transition:transform .2s;display:flex;flex-direction:column;min-height:280px;height:100%}
+        .rc:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+        .rc h4{font-size:16px;font-weight:700;color:#0F1B2D;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-bottom:2px solid #EFF3F8;padding-bottom:10px;flex-shrink:0}
+        .rc ul{list-style:none;padding:0;flex:1}
+        .rc ul li{padding:8px 0;border-bottom:1px solid #F0F2F5;font-size:13px;display:flex;gap:10px;align-items:flex-start}
+        .rc ul li:last-child{border-bottom:none}
+        .bl{color:#2563EB;font-weight:700}
+        .ci{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #F0F2F5;font-size:13px}
+        .ci input[type=checkbox]{width:18px;height:18px;margin-top:1px;accent-color:#2563EB;cursor:pointer;flex-shrink:0}
+        .ci label{flex:1;cursor:pointer;color:#1C1C1E;line-height:1.4}
+        .sl{list-style:none;padding:0;flex:1}
+        .sl li{padding:10px 0;border-bottom:1px solid #F0F2F5;font-size:13px;display:flex;gap:12px;align-items:flex-start}
+        .sl li:last-child{border-bottom:none}
+        .st strong{display:block;color:#1C1C1E}.st span{color:#6B7280;font-size:12px}
+        .hf{background:#0F1B2D;color:rgba(255,255,255,.35);font-size:11px;padding:16px 56px;display:flex;justify-content:space-between;flex-wrap:wrap}
+        @media(max-width:900px){.dh{padding:32px 24px 24px}.hg{padding:20px 16px 40px;gap:12px}.rg{grid-template-columns:1fr}.fg{grid-template-columns:1fr}.sd{flex-direction:column;align-items:flex-start}.sd select{width:100%}.fs{font-size:11px;padding:4px 10px}.fc2{min-width:500px}.fl{min-width:60px;font-size:9px}.fs .tt{width:200px;font-size:10px}}
     </style>
 </head>
 <body>
 
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen">
-        <div class="login-box">
-            <h1>Lareina Chen</h1>
-            <p class="subtitle">Monthly Report Dashboard</p>
-            <!-- HINT SECTION -->
-            <div class="hint">
-                <strong>Please enter your name</strong>
-            </div>
-            <input type="password" id="passwordInput" placeholder="Enter password" autofocus>
-            <div class="error-msg" id="loginError"></div>
-            <button id="loginBtn">Access Dashboard</button>
+<div id="l">
+    <div class="b">
+        <h1>Lareina Chen</h1>
+        <p class="s">Monthly Report Dashboard</p>
+        <div class="h">Please enter your name</div>
+        <input type="password" id="p" placeholder="Enter your name" autofocus>
+        <div class="e" id="e"></div>
+        <button id="b">Access Dashboard</button>
+    </div>
+</div>
+
+<div id="d">
+    <div class="dh">
+        <div class="hl">
+            <div class="he">Supply Chain & Customer Data Analyst</div>
+            <div class="hn">Lareina<br><em>Chen</em></div>
+            <div class="hr">Homelegance NJ · Customer Service Division</div>
+        </div>
+        <div class="hr2">
+            <div class="hd" id="hd"></div>
+            <div class="hb" id="hb"></div>
         </div>
     </div>
-
-    <!-- MAIN DASHBOARD -->
-    <div id="home">
-        <div class="home-header">
-            <div class="hh-left">
-                <div class="hh-eyebrow">Supply Chain & Customer Data Analyst</div>
-                <div class="hh-name">Lareina<br><em>Chen</em></div>
-                <div class="hh-role">Homelegance NJ &nbsp;·&nbsp; Customer Service Division</div>
+    <div class="hg">
+        <div class="cw" style="grid-column:span 12;">
+            <div style="margin-bottom:12px;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;">Documents</h3>
+                <p style="font-size:13px;color:#6B7280;margin-top:4px;">Click any file to open</p>
             </div>
-            <div class="hh-right">
-                <div class="hh-date" id="homeDate"></div>
-                <div class="hh-badge" id="homeMonthBadge"></div>
+            <div class="fg">
+                <a class="fc" href="#" onclick="of('training')">
+                    <span class="fi">📋</span>
+                    <span class="fi2"><span class="fn">Training Document</span><span class="fd">Training reference</span></span>
+                    <span class="ft">Training</span>
+                </a>
+                <a class="fc" href="#" onclick="of('cit')">
+                    <span class="fi">📊</span>
+                    <span class="fi2"><span class="fn">CIT Template</span><span class="fd">Customer CIT Information</span></span>
+                    <span class="ft">Accounting</span>
+                </a>
+                <a class="fc" href="#" onclick="of('inventory')">
+                    <span class="fi">📦</span>
+                    <span class="fi2"><span class="fn">Inventory Document</span><span class="fd">2026 July Inventory</span></span>
+                    <span class="ft">Inventory</span>
+                </a>
             </div>
         </div>
-
-        <div class="home-grid">
-            <!-- DOCUMENTS -->
-            <div class="card-white" style="grid-column:span 12;">
-                <div style="margin-bottom:12px;">
-                    <h3 style="font-family:'Playfair Display'; font-size:20px; font-weight:700;">Documents</h3>
-                    <p style="font-size:13px; color:var(--mid); margin-top:4px;">Click any file to open — update the Google Doc IDs in the code</p>
-                </div>
-                <div class="file-grid">
-                    <a class="file-card" href="#" onclick="openFile('training')">
-                        <span class="file-icon">📋</span>
-                        <span class="file-info">
-                            <span class="file-name">Training Document</span>
-                            <span class="file-desc">Training reference for customer department positions</span>
-                        </span>
-                        <span class="file-tag">Training</span>
-                    </a>
-                    <a class="file-card" href="#" onclick="openFile('cit')">
-                        <span class="file-icon">📊</span>
-                        <span class="file-info">
-                            <span class="file-name">CIT Template</span>
-                            <span class="file-desc">Automatic Customer CIT Information</span>
-                        </span>
-                        <span class="file-tag">Accounting</span>
-                    </a>
-                    <a class="file-card" href="#" onclick="openFile('inventory')">
-                        <span class="file-icon">📦</span>
-                        <span class="file-info">
-                            <span class="file-name">Inventory Document</span>
-                            <span class="file-desc">2026 July Inventory document with formulaes</span>
-                        </span>
-                        <span class="file-tag">Inventory</span>
-                    </a>
-                </div>
+        <div class="cw" style="grid-column:span 12;">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;margin-bottom:12px;">
+                <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;">Job Breakdown</h3>
+                <div style="font-family:'DM Mono',monospace;background:#EFF6FF;padding:4px 16px;border-radius:40px;font-size:12px;color:#2563EB;" id="jb">May 08 - Jun 06</div>
             </div>
-
-            <!-- JOB BREAKDOWN -->
-            <div class="card-white" style="grid-column:span 12;">
-                <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; margin-bottom:12px;">
-                    <h3 style="font-family:'Playfair Display'; font-size:22px; font-weight:700;">Job Breakdown</h3>
-                    <div style="font-family:'DM Mono'; background:#EFF6FF; padding:4px 16px; border-radius:40px; font-size:12px; color:var(--blue);" id="jobBreakdownPeriod">May 08 - Jun 06</div>
-                </div>
-                <div class="month-selector-group">
-                    <label for="jobDropdown">Select Month:</label>
-                    <select id="jobDropdown" onchange="switchJobMonth(this.value)">
-                        <option value="0">May 08 - Jun 06</option>
-                        <option value="1">Jun 08 - Jul 17</option>
-                    </select>
-                </div>
-                <div id="taskStack"></div>
-            </div>
-
-            <!-- WORKFLOW MAP -->
-            <div class="workflow-card">
-                <div class="workflow-header">
-                    <h3>Workflow Map</h3>
-                </div>
-                <div class="workflow-hint">
-                    Simplified overview of the NJ warehouse. Hover over steps to see some thoughts.
-                </div>
-                <div class="flow-container" id="workflowContainer">
-                    <!-- rendered by JS -->
-                </div>
-            </div>
-
-            <!-- REFLECTIONS -->
-            <div class="section-title-with-dropdown">
-                <h2>Monthly Reflections</h2>
-                <select id="reflectionDropdown" onchange="switchReflectionMonth(this.value)">
+            <div class="mg">
+                <label for="jd">Select Month:</label>
+                <select id="jd" onchange="sjm(this.value)">
                     <option value="0">May 08 - Jun 06</option>
                     <option value="1">Jun 08 - Jul 17</option>
                 </select>
             </div>
-
-            <div class="reflection-grid" id="reflectionGrid">
-                <div class="reflection-card" id="plansCard">
-                    <h4>Next Month Plans</h4>
-                    <div id="plansList"></div>
-                </div>
-                <div class="reflection-card" id="officeCard">
-                    <h4>Office Overview</h4>
-                    <ul id="officeList"></ul>
-                </div>
-                <div class="reflection-card" id="suggestionsCard">
-                    <h4>Suggestions & Thoughts</h4>
-                    <ul class="suggestions-list" id="suggestionsList"></ul>
-                </div>
-            </div>
+            <div id="ts"></div>
         </div>
-
-        <div class="home-footer">
-            <span>LAREINA CHEN · SUPPLY CHAIN & CUSTOMER DATA ANALYST</span>
-            <span id="footerDate"></span>
+        <div class="wc">
+            <div class="wh"><h3>Workflow Map</h3></div>
+            <div class="wi">Hover over steps for thoughts</div>
+            <div class="fc2" id="wf"></div>
+        </div>
+        <div class="sd">
+            <h2>Monthly Reflections</h2>
+            <select id="rd" onchange="srm(this.value)">
+                <option value="0">May 08 - Jun 06</option>
+                <option value="1">Jun 08 - Jul 17</option>
+            </select>
+        </div>
+        <div class="rg">
+            <div class="rc" id="pc"><h4>Next Month Plans</h4><div id="pl"></div></div>
+            <div class="rc" id="oc"><h4>Office Overview</h4><ul id="ol"></ul></div>
+            <div class="rc" id="sc"><h4>Suggestions</h4><ul class="sl" id="sgl"></ul></div>
         </div>
     </div>
+    <div class="hf">
+        <span>LAREINA CHEN · SUPPLY CHAIN & CUSTOMER DATA ANALYST</span>
+        <span id="fd2"></span>
+    </div>
+</div>
 
-    <script>
-        const ENCODED_PASSWORDS = [
-            'a2VudA==',      
-            'Y2hlbHNlYQ==', 
-            'eXVraQ=='      
-        ];
+<script>
+var _p = 'bGFyZWluYXxrZW50fGNoZWxzZWF8eXVraQ==';
 
-        // ============================================================
-        //  ANTI-DEBUGGING MEASURES
-        // ============================================================
+function _decode(str) {
+    try {
+        var decoded = atob(str);
+        return decoded.split('|');
+    } catch(e) {
+        return [];
+    }
+}
 
-        // Disable right-click
-        document.addEventListener('contextmenu', e => {
-            e.preventDefault();
-            return false;
-        });
+var _validPasswords = _decode(_p);
 
-        // Disable DevTools shortcuts
-        document.addEventListener('keydown', function(e) {
-            const blocked = [
-                e.key === 'F12',
-                (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())),
-                (e.ctrlKey && e.key.toUpperCase() === 'U'),
-                (e.ctrlKey && e.key.toUpperCase() === 'S')
-            ];
-
-            if (blocked.some(b => b)) {
-                e.preventDefault();
-                alert('🔒 This feature is disabled for security.');
-                return false;
-            }
-        });
-
-        // ============================================================
-        //  LOGIN VERIFICATION
-        // ============================================================
-
-        function verifyLogin() {
-            const passwordInput = document.getElementById('passwordInput');
-            const error = document.getElementById('loginError');
-            const password = passwordInput.value.trim();
-
-            if (!password) {
-                error.textContent = 'Please enter a password.';
-                return;
-            }
-
-            // Encode the input password to Base64
-            const encodedInput = btoa(password);
-
-            // Check against encoded passwords
-            let isAuthenticated = ENCODED_PASSWORDS.includes(encodedInput);
-
-            if (isAuthenticated) {
-                // Success - show dashboard
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('home').classList.add('active');
-                error.textContent = '';
-                passwordInput.value = '';
-
-                // Initialize dashboard
-                setDate();
-                switchJobMonth(0);
-                switchReflectionMonth(0);
-                renderWorkflow();
-
-                // Store session
-                sessionStorage.setItem('authenticated', 'true');
-                sessionStorage.setItem('auth_time', Date.now().toString());
-            } else {
-                error.textContent = '❌ Incorrect password. Please try again.';
-                passwordInput.value = '';
-                passwordInput.focus();
-
-                // Brute force protection
-                const btn = document.getElementById('loginBtn');
-                btn.disabled = true;
-                btn.textContent = '⏳ Please wait...';
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.textContent = 'Access Dashboard';
-                }, 1500);
-            }
-        }
-
-        // ============================================================
-        //  LOGIN VERIFICATION
-        // ============================================================
-
-        function verifyLogin() {
-            const passwordInput = document.getElementById('passwordInput');
-            const error = document.getElementById('loginError');
-            const password = passwordInput.value.trim();
-
-            if (!password) {
-                error.textContent = 'Please enter your name.';
-                return;
-            }
-
-            // Convert to lowercase for case-insensitive comparison
-            const passwordLower = password.toLowerCase();
-
-            // Check if the lowercase version matches any valid password
-            const isAuthenticated = VALID_PASSWORDS.includes(passwordLower);
-
-            if (isAuthenticated) {
-                // Success - show dashboard
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('home').classList.add('active');
-                error.textContent = '';
-                passwordInput.value = '';
-
-                // Initialize dashboard
-                setDate();
-                switchJobMonth(0);
-                switchReflectionMonth(0);
-                renderWorkflow();
-
-                // Store session
-                sessionStorage.setItem('authenticated', 'true');
-                sessionStorage.setItem('auth_time', Date.now().toString());
-            } else {
-                error.textContent = '❌ Incorrect name. Please try again.';
-                passwordInput.value = '';
-                passwordInput.focus();
-
-                // Brute force protection
-                const btn = document.getElementById('loginBtn');
-                btn.disabled = true;
-                btn.textContent = '⏳ Please wait...';
-                setTimeout(() => {
-                    btn.disabled = false;
-                    btn.textContent = 'Access Dashboard';
-                }, 1500);
-            }
-        }
+setTimeout(function() {
+    _p = null;
+}, 10);
     
-        // ============================================================
-        //  SESSION CHECK
-        // ============================================================
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const auth = sessionStorage.getItem('authenticated');
-            const authTime = sessionStorage.getItem('auth_time');
+document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    return false;
+});
 
-            if (auth === 'true' && authTime) {
-                const elapsed = Date.now() - parseInt(authTime);
-                if (elapsed < 4 * 60 * 60 * 1000) {
-                    // Auto-login
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('home').classList.add('active');
-                    setDate();
-                    switchJobMonth(0);
-                    switchReflectionMonth(0);
-                    renderWorkflow();
-                } else {
-                    sessionStorage.clear();
-                }
-            }
-        });
 
-        // ============================================================
-        //  ATTACH EVENT LISTENERS
-        // ============================================================
+document.addEventListener('keydown', function(e) {
+    var blocked = [
+        e.key === 'F12',
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())),
+        (e.ctrlKey && e.key.toUpperCase() === 'U'),
+        (e.ctrlKey && e.key.toUpperCase() === 'S'),
+        (e.metaKey && e.shiftKey && ['I', 'J', 'C'].includes(e.key.toUpperCase())),
+        (e.metaKey && e.key.toUpperCase() === 'U')
+    ];
+    if (blocked.some(function(b) { return b; })) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+}, true);
 
-        document.getElementById('loginBtn').addEventListener('click', verifyLogin);
-        document.getElementById('passwordInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') verifyLogin();
-        });
-        // ============================================================
-        //  JOB BREAKDOWN DATA
-        // ============================================================
-        var jobBreakdownData = [{
-            period: "May 08 - Jun 06",
-            tasks: [
-                { name: "Customers", percent: 38, color: "#2563EB", description: "Take customer calls for pickup scheduling and issue resolution. Place orders through phone calls and emails. Answer questions about products, inventory stock checks, backorder status, and payment tracking." },
-                { name: "Window pickup orders", percent: 30, color: "#10B981", description: "Prepare paperwork, coordinate order window pickup, verify orders, provide gate directions, collect payment, record pickup details, and work with accounts." },
-                { name: "Invoices & docs organization", percent: 17, color: "#8B5CF6", description: "Develop training SOPs. Organize paper invoices 12000 - 15500 into ordered file with intervals of 50 during slower pickups and phone calls." },
-                { name: "Email follow-up on pickups", percent: 15, color: "#F59E0B", description: "Send confirmation emails to customers who are way past their scheduled pickup date. Send order acknowledgements and reminders to customers to ensure effective usage of inventories and turn them into revenue." }
-            ]
-        }, {
-            period: "Jun 08 - Jul 17",
-            tasks: [
-                { name: "Customers", percent: 35, color: "#2563EB", description: "Handle customer inquiries, order placement, product questions, inventory checks, backorder status, and payment tracking via phone and email. Answer any questions and resolve questions customers have." },
-                { name: "Delivery Scheduling", percent: 30, color: "#F59E0B", description: "Work with Lucy for delivery trucks. Confirm delivery items and orders, calculate CBF, fulfill delivery truck goals, collect payments for past deliveries and answer customer questions regarding ETA and routes." },
-                { name: "Invoices Organization", percent: 12, color: "#8B5CF6", description: "Organize paper invoices up to date (23300) into ordered file with intervals of 50. Use signed invoices for open balance collection, credits/rma and questions regarding payment." },
-                { name: "Projects", percent: 8, color: "#8B5CF6", description: "Continuously improve and add new modules to the SOP documentation. Help develop Google Sheets template for CIT application. Participate in July inventory check project with google sheets/excel documents. Start work on September open house with order placing and invitation card making." },
-                { name: "RMA & Parts", percent: 7, color: "#EF4444", description: "Process Return Merchandise Authorizations and damaged/missing parts. Receive requests from customers, evaluate the problems with Antonio and manage returns, exchanges, credit memos, parts orders, and reverse logistics coordination." },
-                { name: "Window Pickup Orders", percent: 5, color: "#10B981", description: "Prepare pickup paperwork, coordinate order window scheduling, verify orders, provide gate directions, collect payment, and record pickup details." }
-            ]
-        }];
 
-        // ============================================================
-        //  MONTHLY REFLECTION DATA
-        // ============================================================
-        var monthData = [{
-            plans: [
-                "Paper invoices organization up to date",
-                "Improve pickup rate",
-                "Learn RMA process and reverse logistics workflow",
-                "Work on SOP documentation and training materials"
-            ],
-            office: [
-                "July 4th Weekend: Warehouse Inventory Check - Full physical count of inventories, reconciliation with ERP system, and flagging discrepancies."
-            ],
-            suggestions: [
-                { text: "Payment: Customer notes lost in ERP if not being notified, past dues and account information in a separate tab → AI detection with notification related to payment" },
-                { text: "Missing/Wrong Products: Barcode scanning + validation checkpoints at pick, pack, load stations" },
-                { text: "Product Substitutions: AI recommendation engine on website based on product type, color, size, ETA" },
-                { text: "Invoices & Documentation: Digital filing once warehouse receives paper and finishes pickup/delivery" }
-            ]
-        }, {
-            plans: [
-                "Organize the invoices in the office. Keep paper invoices organization up to date",
-                "Finalize the Manny driver's document on SOP for more convenient delivery ETA",
-                "Clean the 2026 pickup board data document for data visualization",
-                "Finish the open house invitation document and prepartion"
-            ],
-            office: [
-                "September Open House"
-            ],
-            suggestions: [
-                { text: "Delivery: Truck GPS Tracking" },
-                { text: "Barcode scanning of merchandise: ease of inventory and credit issue with returned items" },
-                { text: "Analytics: ERP customer YTD sales amount visualization" },
-                { text: "Shared office emails for efficiency for different purposes (e.g. services/orders)" }
-            ]
-        }];
-
-        // ============================================================
-        //  WORKFLOW DATA
-        // ============================================================
-        function thoughtTip(thoughts) {
-            if (!thoughts || thoughts.length === 0) return '';
-            var content = thoughts.join('<br><br>');
-            return `
-                <span class="thought-tip">
-                    <span class="tip-title">💡 Thoughts</span>
-                    <span class="tip-content">${content}</span>
-                </span>
-            `;
+(function() {
+    var _trap = function() {
+        var _s = Date.now();
+        debugger;
+        var _e = Date.now();
+        if (_e - _s > 50) {
+            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0F1B2D;color:#fff;font-family:sans-serif;padding:40px;text-align:center;"><h2>🔒 Security Violation</h2></div>';
+            setTimeout(function() { window.location.href = 'about:blank'; }, 500);
         }
+    };
+    setInterval(_trap, 2000);
+})();
 
-        var workflowRows = [{
-            label: "Before Order",
-            isParallel: true,
-            steps: [
-                { label: "Availability Check", color: "blue", thoughts: ["Automated backorder alerts for customers"] },
-                { label: "Product Questions", color: "blue", thoughts: ["AI chatbot for common product information questions"] },
-                { label: "Recommendations", color: "blue", thoughts: ["Website recommendations of alternatives for similar products"] },
-                { label: "Pricing", color: "blue"}
-            ]
-        }, {
-            label: "Place Order",
-            steps: [
-                { label: "Phone", color: "purple", thoughts: ["More convenient way to send confirmation emails through ERP, bulk sales order can't do send email"] },
-                { label: "Email", color: "purple", thoughts: ["An office order email that everyone has access to for prompt processing when anyone has time"] },
-                { label: "Website", color: "purple" }
-            ],
-            isOrder: true
-        }, {
-            label: "Shipment Method",
-            isShipment: true
-        }, {
-            label: "Payment",
-            isPayment: true
-        }, {
-            label: "Warehouse",
-            isWarehouse: true
-        }, {
-            label: "Follow Up",
-            isFollowUp: true
-        }, {
-            label: "After-sales Service",
-            isAfterService: true
-        }];
+// ============================================================
+//  LOGIN FUNCTION
+// ============================================================
 
-        // ============================================================
-        //  RENDER WORKFLOW
-        // ============================================================
-        function renderWorkflow() {
-            var container = document.getElementById('workflowContainer');
-            if (!container) return;
+function verifyLogin() {
+    var input = document.getElementById('p');
+    var error = document.getElementById('e');
+    var val = input.value.trim().toLowerCase();
 
-            var html = '';
+    if (!val) {
+        error.textContent = 'Please enter your name.';
+        return;
+    }
 
-            workflowRows.forEach(function(row, idx) {
-                var stepsHtml = '';
+    // Check against valid passwords
+    var auth = _validPasswords.indexOf(val) !== -1;
 
-                if (row.isParallel) {
-                    var stepElements = row.steps.map(function(step, i) {
-                        var tipHtml = thoughtTip(step.thoughts);
-                        return '<span class="flow-step ' + step.color + '">' + step.label + tipHtml + '</span>';
-                    });
-                    stepsHtml = stepElements.join(' <span class="sep-pipe">|</span> ');
-                } else if (row.isOrder) {
-                    var stepElements2 = row.steps.map(function(step, i) {
-                        var tipHtml = thoughtTip(step.thoughts);
-                        return '<span class="flow-step ' + step.color + '">' + step.label + tipHtml + '</span>';
-                    });
-                    stepsHtml = stepElements2.join(' <span class="sep-pipe">|</span> ');
-                    stepsHtml += ' <span class="flow-arrow">→</span> <span class="flow-step purple">Log Order' + thoughtTip(['Automated confirmation sent to customer']) + '</span>';
-                } else if (row.isShipment) {
-                    stepsHtml = `
-                        <span class="flow-step green">Pickup</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step red">Delivery</span>
-                        <span style="display:block; width:100%; margin-top:4px; padding:4px 0 4px 8px; border-left:2px dashed #D1D5DB;">
-                            <span style="font-size:9px; font-weight:700; color:var(--mid); text-transform:uppercase;">Pickup:</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Reach out to schedule</span>
-                            <span class="sep-pipe">|</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Driver at window</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Find orders</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Collect payment</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Will Call Paperwork${thoughtTip(['Digital scanning of signed paperwork for easier filing and future trace back when needed'])}</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step green" style="font-size:11px; padding:3px 10px;">Driver head to warehouse for loading</span>
-                        </span>
-                        <span style="display:block; width:100%; margin-top:4px; padding:4px 0 4px 8px; border-left:2px dashed #D1D5DB;">
-                            <span style="font-size:9px; font-weight:700; color:var(--mid); text-transform:uppercase;">Delivery:</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Confirmation day before</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Freight calculation</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">CFT calculation</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Warehouse prepull${thoughtTip(['Barcode Scan to make sure items boxes are correct and not missing'])}</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Payment</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Invoices Paperwork${thoughtTip(['Digital scanning of signed paperwork for easier filing and future trace back when needed'])}</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Trucking route plan${thoughtTip(['Customers often ask about ETA and route, GPS trackers maybe helpful when it is hard to reach the driver'])}</span>
-                            <span class="flow-arrow">→</span>
-                            <span class="flow-step red" style="font-size:11px; padding:3px 10px;">Warehouse DDAY morning load</span>
-                        </span>
-                    `;
-                } else if (row.isPayment) {
-                    stepsHtml = `
-                        <span class="flow-step gold">Cash</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step gold">Check</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step gold">Zelle</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step gold">Credit Card</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step gold">CIT${thoughtTip(['Need Time Processing'])}</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step gold">Wire</span>
-                        <span class="payment-note"><span class="highlight">Customer can call/email ahead for early process, prepaid confirmation or at the moment</span></span>
-                    `;
-                } else if (row.isWarehouse) {
-                    stepsHtml = `
-                        <span class="flow-step green">Receive Paperwork${thoughtTip(['Digital pick tickets for efficient order retrieval', 'QR scanning for faster processing', 'Barcode validation to ensure accuracy'])}</span>
-                        <span class="flow-arrow">→</span>
-                        <span class="flow-step green">Find Item${thoughtTip(['Inventory location tracking for quick item retrieval'])}</span>
-                        <span class="flow-arrow">→</span>
-                        <span class="flow-step green">Load Truck${thoughtTip(['Loading optimization for space efficiency'])}</span>
-                    `;
-                } else if (row.isFollowUp) {
-                    stepsHtml = `
-                        <span class="flow-step pink">Missed Pickup/Delivery</span>
-                        <span class="flow-arrow">→</span>
-                        <span class="flow-step pink">Follow-up Call/Email</span>
-                        <span class="flow-arrow">→</span>
-                        <span class="flow-step pink">Reschedule</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step pink">Cancellation</span>
-                    `;
-                } else if (row.isAfterService) {
-                    stepsHtml = `
-                        <span class="flow-step indigo">Damaged/Wrong/Missing${thoughtTip(['Parts lookup for quick identification'])}</span>
-                        <span class="flow-arrow">→</span>
-                        <span class="flow-step indigo">Customer Reach Out${thoughtTip(['Tracking system for organized issue tracking', 'Maybe a shared office email for replacements, returns, and parts requests so customer issues are handled without waiting for one person'])}</span>
-                        <span class="flow-arrow">→</span>
-                        <span class="flow-step indigo">Replacement</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step indigo">Credit${thoughtTip(['Alerts for open RMA over a certain period of time'])}</span>
-                        <span class="sep-pipe">|</span>
-                        <span class="flow-step indigo">Parts Order</span>
-                    `;
-                } else {
-                    stepsHtml = row.steps.map(function(step, stepIdx) {
-                        var arrow = stepIdx < row.steps.length - 1 ? '<span class="flow-arrow">→</span>' : '';
-                        var tipHtml = thoughtTip(step.thoughts);
-                        return '<span class="flow-step ' + step.color + '">' + step.label + tipHtml + '</span> ' + arrow;
-                    }).join('');
-                }
+    if (auth) {
+        document.getElementById('l').classList.add('h');
+        document.getElementById('d').classList.add('a');
+        error.textContent = '';
+        input.value = '';
+        
+        setDate();
+        sjm(0);
+        srm(0);
+        renderWorkflow();
+        
+        sessionStorage.setItem('auth', 'true');
+        sessionStorage.setItem('auth_time', Date.now().toString());
+    } else {
+        error.textContent = '❌ Incorrect name. Please try again.';
+        input.value = '';
+        input.focus();
+        var btn = document.getElementById('b');
+        btn.disabled = true;
+        btn.textContent = '⏳ Please wait...';
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.textContent = 'Access Dashboard';
+        }, 1500);
+    }
+}
 
-                html += `
-                    <div class="flow-row">
-                        <span class="flow-label">${row.label}</span>
-                        ${stepsHtml}
-                    </div>
-                `;
+// ============================================================
+//  SESSION CHECK
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    var auth = sessionStorage.getItem('auth');
+    var authTime = sessionStorage.getItem('auth_time');
+    if (auth === 'true' && authTime) {
+        var elapsed = Date.now() - parseInt(authTime);
+        if (elapsed < 4 * 60 * 60 * 1000) {
+            document.getElementById('l').classList.add('h');
+            document.getElementById('d').classList.add('a');
+            setDate();
+            sjm(0);
+            srm(0);
+            renderWorkflow();
+        } else {
+            sessionStorage.clear();
+        }
+    }
+});
+
+// ============================================================
+//  EVENT LISTENERS
+// ============================================================
+
+document.getElementById('b').addEventListener('click', verifyLogin);
+document.getElementById('p').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        verifyLogin();
+    }
+});
+
+// ============================================================
+//  DASHBOARD DATA & FUNCTIONS
+// ============================================================
+
+var jobData = [{
+    period: "May 08 - Jun 06",
+    tasks: [
+        { name: "Customers", percent: 38, color: "#2563EB", description: "Take customer calls for pickup scheduling and issue resolution. Place orders through phone calls and emails. Answer questions about products, inventory stock checks, backorder status, and payment tracking." },
+        { name: "Window pickup orders", percent: 30, color: "#10B981", description: "Prepare paperwork, coordinate order window pickup, verify orders, provide gate directions, collect payment, record pickup details, and work with accounts." },
+        { name: "Invoices & docs organization", percent: 17, color: "#8B5CF6", description: "Develop training SOPs. Organize paper invoices 12000 - 15500 into ordered file with intervals of 50 during slower pickups and phone calls." },
+        { name: "Email follow-up on pickups", percent: 15, color: "#F59E0B", description: "Send confirmation emails to customers who are way past their scheduled pickup date. Send order acknowledgements and reminders to customers to ensure effective usage of inventories and turn them into revenue." }
+    ]
+}, {
+    period: "Jun 08 - Jul 17",
+    tasks: [
+        { name: "Customers", percent: 35, color: "#2563EB", description: "Handle customer inquiries, order placement, product questions, inventory checks, backorder status, and payment tracking via phone and email. Answer any questions and resolve questions customers have." },
+        { name: "Delivery Scheduling", percent: 30, color: "#F59E0B", description: "Work with Lucy for delivery trucks. Confirm delivery items and orders, calculate CBF, fulfill delivery truck goals, collect payments for past deliveries and answer customer questions regarding ETA and routes." },
+        { name: "Invoices Organization", percent: 12, color: "#8B5CF6", description: "Organize paper invoices up to date (23300) into ordered file with intervals of 50. Use signed invoices for open balance collection, credits/rma and questions regarding payment." },
+        { name: "Projects", percent: 8, color: "#8B5CF6", description: "Continuously improve and add new modules to the SOP documentation. Help develop Google Sheets template for CIT application. Participate in July inventory check project with google sheets/excel documents. Start work on September open house with order placing and invitation card making." },
+        { name: "RMA & Parts", percent: 7, color: "#EF4444", description: "Process Return Merchandise Authorizations and damaged/missing parts. Receive requests from customers, evaluate the problems with Antonio and manage returns, exchanges, credit memos, parts orders, and reverse logistics coordination." },
+        { name: "Window Pickup Orders", percent: 5, color: "#10B981", description: "Prepare pickup paperwork, coordinate order window scheduling, verify orders, provide gate directions, collect payment, and record pickup details." }
+    ]
+}];
+
+var monthData = [{
+    plans: [
+        "Paper invoices organization up to date",
+        "Improve pickup rate",
+        "Learn RMA process and reverse logistics workflow",
+        "Work on SOP documentation and training materials"
+    ],
+    office: [
+        "July 4th Weekend: Warehouse Inventory Check - Full physical count of inventories, reconciliation with ERP system, and flagging discrepancies."
+    ],
+    suggestions: [
+        { text: "Payment: Customer notes lost in ERP if not being notified, past dues and account information in a separate tab → AI detection with notification related to payment" },
+        { text: "Missing/Wrong Products: Barcode scanning + validation checkpoints at pick, pack, load stations" },
+        { text: "Product Substitutions: AI recommendation engine on website based on product type, color, size, ETA" },
+        { text: "Invoices & Documentation: Digital filing once warehouse receives paper and finishes pickup/delivery" }
+    ]
+}, {
+    plans: [
+        "Organize the invoices in the office. Keep paper invoices organization up to date",
+        "Finalize the Manny driver's document on SOP for more convenient delivery ETA",
+        "Clean the 2026 pickup board data document for data visualization",
+        "Finish the open house invitation document and prepartion"
+    ],
+    office: [
+        "September Open House"
+    ],
+    suggestions: [
+        { text: "Delivery: Truck GPS Tracking" },
+        { text: "Barcode scanning of merchandise: ease of inventory and credit issue with returned items" },
+        { text: "Analytics: ERP customer YTD sales amount visualization" }
+    ]
+}];
+
+function thoughtTip(thoughts) {
+    if (!thoughts || thoughts.length === 0) return '';
+    var content = thoughts.join('<br><br>');
+    return '<span class="tt"><span class="ttt">💡 Thoughts</span><span class="ttc">' + content + '</span></span>';
+}
+
+var workflowRows = [{
+    label: "Before Order",
+    isParallel: true,
+    steps: [
+        { label: "Availability Check", color: "blue", thoughts: ["Automated backorder alerts for customers"] },
+        { label: "Product Questions", color: "blue", thoughts: ["AI chatbot for common product information questions"] },
+        { label: "Recommendations", color: "blue", thoughts: ["Website recommendations of alternatives for similar products"] },
+        { label: "Pricing", color: "blue" }
+    ]
+}, {
+    label: "Place Order",
+    steps: [
+        { label: "Phone", color: "purple", thoughts: ["More convenient way to send confirmation emails through ERP"] },
+        { label: "Email", color: "purple", thoughts: ["Shared office email for prompt processing"] },
+        { label: "Website", color: "purple" }
+    ],
+    isOrder: true
+}, {
+    label: "Shipment Method",
+    isShipment: true
+}, {
+    label: "Payment",
+    isPayment: true
+}, {
+    label: "Warehouse",
+    isWarehouse: true
+}, {
+    label: "Follow Up",
+    isFollowUp: true
+}, {
+    label: "After-sales Service",
+    isAfterService: true
+}];
+
+function renderWorkflow() {
+    var container = document.getElementById('wf');
+    if (!container) return;
+    var html = '';
+    workflowRows.forEach(function(row) {
+        var stepsHtml = '';
+        if (row.isParallel) {
+            var stepElements = row.steps.map(function(step) {
+                var tip = thoughtTip(step.thoughts);
+                return '<span class="fs ' + step.color + '">' + step.label + tip + '</span>';
             });
-
-            container.innerHTML = html;
-        }
-
-        // ============================================================
-        //  SWITCH FUNCTIONS
-        // ============================================================
-        function switchJobMonth(index) {
-            var data = jobBreakdownData[index];
-            if (!data) return;
-            document.getElementById('jobBreakdownPeriod').textContent = data.period;
-            var container = document.getElementById('taskStack');
-            if (container) {
-                container.innerHTML = data.tasks.map(function(task) {
-                    return `
-                    <div class="task-row">
-                        <div class="task-header">
-                            <span class="task-name">${task.name}</span>
-                            <span class="task-percent">${task.percent}%</span>
-                        </div>
-                        <div class="progress-bg"><div class="progress-fill" style="width: ${task.percent}%; background: ${task.color};"></div></div>
-                        <div class="task-description">${task.description}</div>
-                    </div>
-                `;
-                }).join('');
-            }
-        }
-
-        function switchReflectionMonth(index) {
-            var data = monthData[index];
-            if (!data) return;
-            document.getElementById('plansList').innerHTML = data.plans.map(function(item, i) {
-                return `
-                <div class="checklist-item">
-                    <input type="checkbox" id="plan_${index}_${i}">
-                    <label for="plan_${index}_${i}">${item}</label>
-                </div>
-            `;
-            }).join('');
-            document.getElementById('officeList').innerHTML = data.office.map(function(item) {
-                return '<li><span class="bullet">▸</span> ' + item + '</li>';
-            }).join('');
-            document.getElementById('suggestionsList').innerHTML = data.suggestions.map(function(item) {
-                return '<li><span class="suggestion-text">' + item.text + '</span></li>';
+            stepsHtml = stepElements.join(' <span class="sp">|</span> ');
+        } else if (row.isOrder) {
+            var stepElements2 = row.steps.map(function(step) {
+                var tip = thoughtTip(step.thoughts);
+                return '<span class="fs ' + step.color + '">' + step.label + tip + '</span>';
+            });
+            stepsHtml = stepElements2.join(' <span class="sp">|</span> ');
+            stepsHtml += ' <span class="fa">→</span> <span class="fs purple">Log Order' + thoughtTip(['Order tracking with real-time updates', 'Automated confirmation sent to customer']) + '</span>';
+        } else if (row.isShipment) {
+            stepsHtml = '<span class="fs green">Pickup</span> <span class="sp">|</span> <span class="fs red">Delivery</span> <span style="display:block;width:100%;margin-top:4px;padding:4px 0 4px 8px;border-left:2px dashed #D1D5DB;"><span style="font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;">Pickup:</span> <span class="fs green" style="font-size:11px;padding:3px 10px;">Reach out to schedule</span> <span class="sp">|</span> <span class="fs green" style="font-size:11px;padding:3px 10px;">Driver at window</span> <span class="fa">→</span> <span class="fs green" style="font-size:11px;padding:3px 10px;">Find orders</span> <span class="fa">→</span> <span class="fs green" style="font-size:11px;padding:3px 10px;">Collect payment</span> <span class="fa">→</span> <span class="fs green" style="font-size:11px;padding:3px 10px;">Will Call Paperwork' + thoughtTip(['Digital scanning of signed paperwork for easier filing']) + '</span> <span class="fa">→</span> <span class="fs green" style="font-size:11px;padding:3px 10px;">Driver head to warehouse</span></span><span style="display:block;width:100%;margin-top:4px;padding:4px 0 4px 8px;border-left:2px dashed #D1D5DB;"><span style="font-size:9px;font-weight:700;color:#6B7280;text-transform:uppercase;">Delivery:</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Confirmation day before' + thoughtTip(['GPS/tracking system would be helpful']) + '</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Freight calculation</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">CFT calculation</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Warehouse prepull' + thoughtTip(['Barcode scan to verify items']) + '</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Payment</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Invoices Paperwork' + thoughtTip(['Digital scanning of signed paperwork']) + '</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Trucking route plan</span> <span class="fa">→</span> <span class="fs red" style="font-size:11px;padding:3px 10px;">Warehouse DDAY morning load</span></span>';
+        } else if (row.isPayment) {
+            stepsHtml = '<span class="fs gold">Cash</span> <span class="sp">|</span> <span class="fs gold">Check</span> <span class="sp">|</span> <span class="fs gold">Zelle</span> <span class="sp">|</span> <span class="fs gold">Credit Card</span> <span class="sp">|</span> <span class="fs gold">CIT' + thoughtTip(['Need time processing']) + '</span> <span class="sp">|</span> <span class="fs gold">Wire</span> <span class="pn"><span class="hl">Customer can call/email ahead for early processing</span></span>';
+        } else if (row.isWarehouse) {
+            stepsHtml = '<span class="fs green">Receive Paperwork' + thoughtTip(['Digital pick tickets for efficient retrieval', 'QR scanning for faster processing']) + '</span> <span class="fa">→</span> <span class="fs green">Find Item' + thoughtTip(['Inventory location tracking']) + '</span> <span class="fa">→</span> <span class="fs green">Load Truck' + thoughtTip(['Loading optimization for space efficiency']) + '</span>';
+        } else if (row.isFollowUp) {
+            stepsHtml = '<span class="fs pink">Missed Pickup/Delivery</span> <span class="fa">→</span> <span class="fs pink">Follow-up Call/Email</span> <span class="fa">→</span> <span class="fs pink">Reschedule</span> <span class="sp">|</span> <span class="fs pink">Cancellation</span>';
+        } else if (row.isAfterService) {
+            stepsHtml = '<span class="fs indigo">Damaged/Wrong/Missing' + thoughtTip(['Parts lookup for quick identification']) + '</span> <span class="fa">→</span> <span class="fs indigo">Customer Reach Out' + thoughtTip(['Tracking system for organized issue tracking']) + '</span> <span class="fa">→</span> <span class="fs indigo">Replacement</span> <span class="sp">|</span> <span class="fs indigo">Credit' + thoughtTip(['Alerts for open RMA over time']) + '</span> <span class="sp">|</span> <span class="fs indigo">Parts Order</span>';
+        } else {
+            stepsHtml = row.steps.map(function(step, stepIdx) {
+                var arrow = stepIdx < row.steps.length - 1 ? '<span class="fa">→</span>' : '';
+                var tip = thoughtTip(step.thoughts);
+                return '<span class="fs ' + step.color + '">' + step.label + tip + '</span> ' + arrow;
             }).join('');
         }
+        html += '<div class="fr"><span class="fl">' + row.label + '</span>' + stepsHtml + '</div>';
+    });
+    container.innerHTML = html;
+}
 
-        // ============================================================
-        //  FILE OPENING
-        // ============================================================
-        var fileUrls = {
-            training: 'https://docs.google.com/document/d/1I5dXi7fMn9eQipc2GsbrCtButRz3SkPxPEqBVQJXRC8/edit?usp=sharing',
-            cit: 'https://docs.google.com/spreadsheets/d/1vlTlSZ6RzvmdsRXfOU3bWQjXW9kvEh9p4DdrZhPmKf8/edit?usp=sharing',
-            inventory: 'https://docs.google.com/spreadsheets/d/1nSun27VF40HBHPppN3z7TiIa9GW7iTVBDqZXIVVzCIw/edit?usp=sharing'
-        };
+function sjm(index) {
+    var data = jobData[index];
+    if (!data) return;
+    document.getElementById('jb').textContent = data.period;
+    var container = document.getElementById('ts');
+    if (container) {
+        container.innerHTML = data.tasks.map(function(task) {
+            return '<div class="tr"><div class="th"><span class="tn">' + task.name + '</span><span class="tp">' + task.percent + '%</span></div><div class="pb"><div class="pf" style="width:' + task.percent + '%;background:' + task.color + ';"></div></div><div class="td">' + task.description + '</div></div>';
+        }).join('');
+    }
+}
 
-        function openFile(type) {
-            var url = fileUrls[type];
-            if (url && url.indexOf('YOUR_') !== -1) {
-                alert('Please update the Google Doc URL in the code for: ' + type);
-            } else if (url) {
-                window.open(url, '_blank');
-            } else {
-                alert('File link not configured for: ' + type);
-            }
-        }
+function srm(index) {
+    var data = monthData[index];
+    if (!data) return;
+    document.getElementById('pl').innerHTML = data.plans.map(function(item, i) {
+        return '<div class="ci"><input type="checkbox" id="plan_' + index + '_' + i + '"><label for="plan_' + index + '_' + i + '">' + item + '</label></div>';
+    }).join('');
+    document.getElementById('ol').innerHTML = data.office.map(function(item) {
+        return '<li><span class="bl">▸</span> ' + item + '</li>';
+    }).join('');
+    document.getElementById('sgl').innerHTML = data.suggestions.map(function(item) {
+        return '<li><span class="st">' + item.text + '</span></li>';
+    }).join('');
+}
 
-        // ============================================================
-        //  DATE HEADER
-        // ============================================================
-        function setDate() {
-            var now = new Date();
-            document.getElementById('homeDate').textContent = now.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            document.getElementById('homeMonthBadge').textContent = now.toLocaleDateString('en-US', {
-                month: 'long',
-                year: 'numeric'
-            });
-            document.getElementById('footerDate').textContent = now.getFullYear();
-        }
-    </script>
+function of(type) {
+    var urls = {
+        training: 'https://docs.google.com/document/d/1I5dXi7fMn9eQipc2GsbrCtButRz3SkPxPEqBVQJXRC8/edit?usp=sharing',
+        cit: 'https://docs.google.com/spreadsheets/d/1vlTlSZ6RzvmdsRXfOU3bWQjXW9kvEh9p4DdrZhPmKf8/edit?usp=sharing',
+        inventory: 'https://docs.google.com/spreadsheets/d/1nSun27VF40HBHPppN3z7TiIa9GW7iTVBDqZXIVVzCIw/edit?usp=sharing'
+    };
+    var url = urls[type];
+    if (url) { window.open(url, '_blank'); } else { alert('File not configured: ' + type); }
+}
+
+function setDate() {
+    var now = new Date();
+    document.getElementById('hd').textContent = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+    document.getElementById('hb').textContent = now.toLocaleDateString('en-US', {
+        month: 'long',
+        year: 'numeric'
+    });
+    document.getElementById('fd2').textContent = now.getFullYear();
+}
+</script>
 </body>
 </html>
