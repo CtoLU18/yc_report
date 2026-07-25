@@ -344,12 +344,12 @@ function verifyLogin() {
         sessionStorage.setItem('auth', 'true');
         sessionStorage.setItem('auth_time', Date.now().toString());
     } else {
-        error.textContent = '❌ Incorrect name. Please try again.';
+        error.textContent = 'Incorrect name. Please try again.';
         input.value = '';
         input.focus();
         var btn = document.getElementById('b');
         btn.disabled = true;
-        btn.textContent = '⏳ Please wait...';
+        btn.textContent = 'Please wait...';
         setTimeout(function() {
             btn.disabled = false;
             btn.textContent = 'Access Dashboard';
